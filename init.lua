@@ -4,6 +4,11 @@ vim.g.maplocalleader = ' '
 
 vim.opt.relativenumber = true
 
+vim.opt.tabstop = 4       -- A tab is equal to 4 spaces
+vim.opt.shiftwidth = 4    -- Number of spaces to use for each step of (auto)indent
+vim.opt.softtabstop = 4   -- Number of spaces a <Tab> counts for while performing editing operations, like inserting a tab or using <BS>
+vim.opt.expandtab = true  -- Convert tabs to spaces
+
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -31,6 +36,7 @@ require('lazy').setup({
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
+
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -240,7 +246,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
-    file_ignore_patterns = { "%.git/" },
+    file_ignore_patterns = { "%.git/", "node_modules"},
     mappings = {
       i = {
         ['<C-u>'] = false,
@@ -270,6 +276,7 @@ vim.keymap.set('n', '<leader>sf', function()
   require('telescope.builtin').find_files({
     hidden = true, -- Include hidden files (dotfiles)
     no_ignore = true, -- Do not respect .gitignore (if you want to include ignored files)
+    file_ignore_patterns = {"vendor/*",".git/*", "node_modules/*", ".venv/*"}
   })
 
 end, { desc = '[S]earch [F]iles' })
@@ -427,9 +434,11 @@ local servers = {
   clangd = {},
   gopls = {},
   terraformls = {},
+  intelephense = {},
   -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
+  rust_analyzer = {},
+  tsserver = {},
+  ansiblels = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
   lua_ls = {
@@ -518,3 +527,5 @@ cmp.setup {
 vim.api.nvim_set_keymap('n', '<leader>ht', ':sp | term<CR>', { noremap = true, silent = true })
 -- Vertical split terminal
 vim.api.nvim_set_keymap('n', '<leader>vt', ':vsp | term<CR>', { noremap = true, silent = true })
+
+
