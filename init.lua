@@ -528,4 +528,29 @@ vim.api.nvim_set_keymap('n', '<leader>ht', ':sp | term<CR>', { noremap = true, s
 -- Vertical split terminal
 vim.api.nvim_set_keymap('n', '<leader>vt', ':vsp | term<CR>', { noremap = true, silent = true })
 
+-- Function to wrap highlighted text in cloze deletion format
+function Cloze(number)
+  -- Get the start and end positions of the visual selection
+  local start_pos = vim.fn.getpos("'<")
+  local end_pos = vim.fn.getpos("'>")
 
+  -- Get the current line
+  local line = vim.fn.getline(start_pos[2])
+
+  -- Extract the selected text
+  local selected_text = string.sub(line, start_pos[3], end_pos[3])
+
+  -- Construct the cloze deletion format
+  local cloze_text = "{{c" .. number .. "::" .. selected_text .. "}}"
+
+  -- Replace the selected text with the cloze deletion
+  local new_line = string.sub(line, 1, start_pos[3] - 1) .. cloze_text .. string.sub(line, end_pos[3] + 1)
+
+  -- Set the new line
+  vim.fn.setline(start_pos[2], new_line)
+end
+
+-- Mappings to call the function with different cloze numbers
+vim.api.nvim_set_keymap('v', '<leader>c1', ':lua Cloze(1)<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>c2', ':lua Cloze(2)<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>c3', ':lua Cloze(3)<CR>', { noremap = true, silent = true })
