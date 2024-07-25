@@ -2,6 +2,22 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+local uname = vim.loop.os_uname()
+if uname.sysname == 'Windows_NT' then
+  local clip = '/mnt/c/Windows/System32/clip.exe'  -- Update this path if necessary
+  if vim.fn.executable(clip) == 1 then
+    vim.api.nvim_create_autocmd('TextYankPost', {
+      group = vim.api.nvim_create_augroup('WSLYank', { clear = true }),
+      callback = function()
+        if vim.v.event.operator == 'y' then
+          local yanked_text = table.concat(vim.fn.getreg('0', 1, 1), '\n')
+          vim.fn.system(clip, yanked_text)
+        end
+      end,
+    })
+  end
+end
+
 vim.opt.relativenumber = true
 
 vim.opt.tabstop = 4       -- A tab is equal to 4 spaces
